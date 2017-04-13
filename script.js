@@ -1,28 +1,55 @@
-const size = 4;
+const size = 5;
 const fontWidth = 36;
 const fontHeight = 42;
 const width = 400 / size;
-const initialLeft = (width - fontWidth) / 2;
-const initialTop = (width - fontHeight) / 2;
+const initialLeft = ( width - fontWidth ) / 2;
+const initialTop = ( width - fontHeight ) / 2;
+
+//L => girar 90º a la izquierda
+//R => girar 90ª a la derecha
+//M => avanzar un
 
 
-function setup (x,y,o,move) {
-  if (x <= size && y <= size) {
+function setup ( x = 0, y = 4, o = 'O', move = ['R','M'/*,'M','M','R','M','R','M','M'*/] ) {
+  if ( x <= size && y <= size ) {
     var icon = '';
-
-    document.getElementById("rover").style.left = initialLeft + x * width + "px";
-    document.getElementById("rover").style.top = initialTop + y * width + "px";
+    let arrowLeft = 'fa fa-arrow-left';
+    let arrowRight = 'fa fa-arrow-right';
+    let arrowUp = 'fa fa-arrow-up';
+    let arrowDown = 'fa fa-arrow-down';
 
     if ( o === 'N' ) {
-      icon = 'fa fa-arrow-up';
+      icon = arrowUp;
     } else if ( o === 'S') {
-      icon = 'fa fa-arrow-down';
+      icon = arrowDown;
     } else if ( o === 'E') {
-      icon = 'fa fa-arrow-right';
+      icon = arrowRight;
     } else if ( o === 'O') {
-      icon = 'fa fa-arrow-left'; }
+      icon = arrowLeft;
+    }
 
-    document.getElementById("arrow").className = icon;
+    // Initial position
+  /*  document.getElementById("rover").style.left = initialLeft + x * width + "px";
+    document.getElementById("rover").style.top = initialTop + y * width + "px";
+    document.getElementById("arrow").className = icon;*/
+
+    // Moving rover
+    if ( move ) {
+      for ( i = 0; i < move.length; i++ ) {
+        if ( move[i] === "M" ) {
+          document.getElementById("rover").style.left = initialLeft + x * width + "px";
+          document.getElementById("rover").style.top = initialTop + y * width + "px";
+          
+          document.getElementById("arrow").className = icon;
+        } else if ( move[i] === "L" ) {
+          document.getElementById("arrow").className = arrowLeft;
+        } else {
+          document.getElementById("arrow").className = arrowRight;
+        }
+      }
+    }
+
+
 
   } else {
     alert ('Error de limitación. Máximo permitido: ' + size + 'x' + size);
