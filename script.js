@@ -2,18 +2,24 @@ const size = 5;
 const fontWidth = 36;
 const fontHeight = 42;
 const width = 400 / size;
+
+//Initial
 const initialLeft = ( width - fontWidth ) / 2;
 const initialTop = ( width - fontHeight ) / 2;
-const originalOrientation = 'L';
+const originalOrientation = 'R';
+const originalX = 0;
+const originalY = 1;
 
+//Values
 var currentArrow = ''; //Add constant
+var currentX = 0;
+var currentY = 0;
+
 const arrowLeft = 'fa fa-arrow-left';
 const arrowRight = 'fa fa-arrow-right';
 const arrowUp = 'fa fa-arrow-up';
 const arrowDown = 'fa fa-arrow-down';
-//L => girar 90º a la izquierda
-//R => girar 90ª a la derecha
-//M => avanzar un
+
 
 function getClassArrow ( newOrientation ) {
   var newIcon = ''; //Add constant
@@ -31,14 +37,16 @@ function getClassArrow ( newOrientation ) {
   return newIcon;
 }
 
-function setup ( x = 0, y = 1, o = originalOrientation ) {
+function setup ( x = originalX, y = originalY, o = originalOrientation ) {
   if ( x <= size && y <= size ) {
     let originalArrow = getClassArrow(originalOrientation);
     currentArrow = originalOrientation;
+    currentX = initialLeft + x * width;
+    currentY = initialTop + y * width;
 
     // Initial position
-    document.getElementById("rover").style.left = initialLeft + x * width + "px";
-    document.getElementById("rover").style.top = initialTop + y * width + "px";
+    document.getElementById("rover").style.left = currentX + "px";
+    document.getElementById("rover").style.top = currentY + "px";
     document.getElementById("arrow").className = originalArrow;
 
   } else {
@@ -46,36 +54,56 @@ function setup ( x = 0, y = 1, o = originalOrientation ) {
   }
 }
 
-function move ( move = ['R'/*,'M','M','R','M','R','M','M'*/] ) {
+function move ( move = ['L'/*,'M','M','R','M','R','M','M'*/] ) {
   // Moving rover
   if ( move ) {
     let newArrow = "";
 
     for ( i = 0; i < move.length; i++ ) {
       if ( move[i] === "M" ) {
-        /* console.log('Seguir hacia delante');
-        document.getElementById("rover").style.left = initialLeft + x * width + "px";
-        document.getElementById("rover").style.top = initialTop + y * width + "px";
+        if ( currentArrow === 'N') {
+          currentY = currentY - 1 * width;
+          document.getElementById("rover").style.top = currentY + "px";
+        } else if ( currentArrow === 'S' ) {
+          currentY = currentY + 1 * width;
+          document.getElementById("rover").style.top = currentY + "px";
+        } else if ( currentArrow === 'L' ) {
+          currentX = currentX - 1 * width;
+          document.getElementById("rover").style.left = currentX + "px";
+        } else {
+          currentX = currentX + 1 * width;
+          document.getElementById("rover").style.left = currentX + "px";
+        }
+        //Crear función de pintado
 
-        document.getElementById("arrow").className = icon;*/
       } else if ( move[i] === "L" ) {
-        /*console.log('Mover a la izquierda');
-        document.getElementById("arrow").className = arrowLeft; */
-      } else {
-          //console.log('Mover a la derecha');
 
-          if ( move[i] === 'N' || move[i] === 'S' ) {
+        if ( currentArrow === 'N' || currentArrow === 'S' ) {
+          newArrow = arrowLeft;
+        }
+        else if ( currentArrow === 'L') {
+          newArrow = arrowDown;
+        }
+        else {
+          newArrow = arrowUp;
+        }
+
+        document.getElementById("arrow").className = newArrow;
+
+      } else {
+
+          if ( currentArrow === 'N' || currentArrow === 'S' ) {
             newArrow = arrowRight;
           }
-          else if ( move[i] === 'L') {
+          else if ( currentArrow === 'L') {
             newArrow = arrowUp;
           }
           else {
             newArrow = arrowDown;
           }
-      }
 
-      document.getElementById("arrow").className = newArrow;
+          document.getElementById("arrow").className = newArrow;
+      }
     }
   }
 }
