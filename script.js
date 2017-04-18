@@ -20,15 +20,12 @@ const arrowDown = 'fa fa-arrow-down';
 
 // Setup user
 const userOrientation = 'R';
-const userX = 1;
-const userY = 1;
-
+const userX = 0;
+const userY = 0;
+const move = ['M','R','M','R','M','R','M','M'];
+var i = 0;
 
 function print (currentX, currentY, classArrow) {
-  console.log(currentX);
-  console.log(currentY);
-  console.log(classArrow);
-  console.log('--------------------');
   document.getElementById("rover").style.left = currentX + "px";
   document.getElementById("rover").style.top = currentY + "px";
   document.getElementById("arrow").className = classArrow;
@@ -45,58 +42,61 @@ function setup (x = userX, y = userY, o = userOrientation) {
     print(currentX, currentY, classArrow);
   }
   else {
-    alert ('Error de limitación. Máximo permitido: ' + size + 'x' + size);
+    alert('Error de limitación. Máximo permitido: ' + size + 'x' + size);
   }
 }
 
-function move (move = ['R','L'/*,'M','R','M','R','M','M'*/]) {
-  // Moving rover
+function moving () {
   if (move) {
-    for (i = 0; i < move.length; i++) {
-      setTimeout(function() {
-        if (move[i] === "M") {
-          if (currentOrientation === 'N') {
-            currentY = currentY - 1 * width;
-          }
-          else if (currentOrientation === 'S') {
-            currentY = currentY + 1 * width;
-          }
-          else if (currentOrientation === 'L') {
-            currentX = currentX - 1 * width;
-          }
-          else {
-            currentX = currentX + 1 * width;
-          }
+    if (move[i] === "M") {
+      if (currentOrientation === 'N') {
+        currentY = currentY - 1 * width;
+      }
+      else if (currentOrientation === 'S') {
+        currentY = currentY + 1 * width;
+      }
+      else if (currentOrientation === 'L') {
+        currentX = currentX - 1 * width;
+      }
+      else {
+        currentX = currentX + 1 * width;
+      }
+    }
+    else if (move[i] === "L") {
+      if (currentOrientation === 'N' || currentOrientation === 'S') {
+        classArrow = arrowLeft;
+        currentOrientation = 'L';
+      }
+      else if (currentOrientation === 'L') {
+        classArrow = arrowDown;
+        currentOrientation = 'S';
+      }
+      else {
+        classArrow = arrowUp;
+        currentOrientation = 'N';
+      }
+    }
+    else {
+        if (currentOrientation === 'N' || currentOrientation === 'S') {
+          classArrow = arrowRight;
+          currentOrientation = 'R';
         }
-        else if (move[i] === "L") {
-          if (currentOrientation === 'N' || currentOrientation === 'S') {
-            classArrow = arrowLeft;
-          }
-          else if (currentOrientation === 'L') {
-            classArrow = arrowDown;
-          }
-          else {
-            classArrow = arrowUp;
-          }
+        else if (currentOrientation === 'L') {
+          classArrow = arrowUp;
+          currentOrientation = 'N';
         }
         else {
-            console.log('R');
-            console.log(move[i]);
-            if (currentOrientation === 'N' || currentOrientation === 'S') {
-              classArrow = arrowRight;
-            }
-            else if (currentOrientation === 'L') {
-              classArrow = arrowUp;
-            }
-            else {
-              classArrow = arrowDown;
-            }
+          classArrow = arrowDown;
+          currentOrientation = 'S';
         }
-
-        print(currentX, currentY, classArrow);
-
-      }, 3000 * i);
     }
+
+    if (i++ == move.length) {
+      return;
+    }
+
+    print(currentX, currentY, classArrow);
+    setTimeout(moving, 1500);
   }
 }
 
